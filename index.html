@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>GS SCORE Current Affairs</title>
   <style>
     body { font-family: Arial, sans-serif; padding: 20px; background: #f4f4f4; }
@@ -38,14 +38,16 @@
         .then(data => {
           const container = document.getElementById(containerId);
           container.innerHTML = '';
-          if (data.items.length === 0) {
+          if (!data.items || data.items.length === 0) {
             container.innerHTML = '<li class="empty">No updates yet.</li>';
             return;
           }
           data.items.slice(0, 10).forEach(item => {
             const li = document.createElement('li');
-            const category = item.categories && item.categories.length > 0
-              ? `<span class="category">${item.categories[0]}</span>` : '';
+            // Safe check for categories array before reading length
+            const category = (item.categories && Array.isArray(item.categories) && item.categories.length > 0)
+              ? `<span class="category">${item.categories[0]}</span>`
+              : '';
             li.innerHTML = `<a href="${item.link}" target="_blank">${item.title}</a> ${category}`;
             container.appendChild(li);
           });
@@ -55,7 +57,7 @@
         });
     }
 
-    // Initial Load
+    // Initial load
     fetchFeed(feeds.english, 'english-news');
     fetchFeed(feeds.hindi, 'hindi-news');
 
